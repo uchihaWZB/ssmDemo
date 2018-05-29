@@ -7,28 +7,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.management.relation.RelationNotFoundException;
 import java.util.Date;
 import java.util.List;
 
-@Service
+@Service("AreaService")
 public class AreaServiceImpl implements AreaService {
 
     @Autowired
     private AreaDao areaDao;
 
     @Override
-    public List<AreaPO> queryArea() {
+    public List<AreaPO> getAreaList() {
         return areaDao.queryArea();
     }
 
     @Override
-    public AreaPO queryAreaById(int areaId) {
+    public AreaPO getAreaById(int areaId) {
         return areaDao.queryAreaById(areaId);
     }
 
     @Transactional
     @Override
-    public boolean insertArea(AreaPO areaPO) {
+    public boolean addArea(AreaPO areaPO) {
         if (areaPO.getAreaName() != null && "".equals(areaPO.getAreaName())) {
             areaPO.setCreateTime(new Date());
             areaPO.setLastEditTime(new Date());
@@ -48,13 +49,46 @@ public class AreaServiceImpl implements AreaService {
         }
     }
 
+    @Transactional
     @Override
-    public boolean updateArea(AreaPO areaPO) {
-        return true;
+    public boolean modifyArea(AreaPO areaPO) {
+        // 控制判断，主要是areaId不能为空
+        if (areaPO.getAreaId() != null && areaPO.getAreaId() > 0) {
+            // 设置默认值
+            areaPO.setLastEditTime(new Date());
+            try {
+                // 更新区域信息
+                int effectedNum = areaDao.updateArea(areaPO);
+                if (effectedNum > 0) {
+                    return true;
+                } else {
+                    throw new RuntimeException("更新区域信息失败！");
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("更新区域信息失败：" + e.toString());
+            }
+        } else {
+            throw new RuntimeException("区域信息不能为空！");
+        }
     }
 
+    @Transactional
     @Override
     public boolean deleteArea(int areaId) {
-        return true;
+        if (areaId > 0) {
+            try {
+                // 删除区域信息
+                int effectedNum = areaDao.deleteArea(areaId);
+                if (effectedNum > 0) {
+                    return true;
+                } else {
+                    throw new RuntimeException("删除区域信息失败！");
+                }
+            } catch (Exception e) {
+                throw new RuntimeException("删除区域信息失败：" + e.toString());
+            }
+        } else {
+            throw new RuntimeException("区域Id不能为空！");
+        }
     }
 }

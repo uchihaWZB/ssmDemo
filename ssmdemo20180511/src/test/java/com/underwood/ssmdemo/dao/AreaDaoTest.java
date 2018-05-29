@@ -35,7 +35,7 @@ public class AreaDaoTest {
     }
 
     @Test
-    @Ignore
+    //@Ignore
     public void insertArea() {
         AreaPO areaPO = new AreaPO();
         areaPO.setAreaName("南苑");
@@ -58,6 +58,7 @@ public class AreaDaoTest {
 
 
     @Test
+    @Ignore
     public void deleteArea() {
         int effectedNum = areaDao.deleteArea(3);
         assertEquals(1,effectedNum);

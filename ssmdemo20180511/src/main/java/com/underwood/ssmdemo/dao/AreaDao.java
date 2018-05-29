@@ -1,6 +1,7 @@
 package com.underwood.ssmdemo.dao;
 
 import com.underwood.ssmdemo.entity.AreaPO;
+import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
@@ -35,7 +36,7 @@ public interface AreaDao {
 
     /**
      * 删除区域信息
-     * @param areaPO
+     * @param areaId
      * @return
      */
     int deleteArea(int areaId);
